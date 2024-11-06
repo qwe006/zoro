@@ -1,0 +1,142 @@
+C:\Users\System21>mysql --version
+mysql  Ver 8.0.36 for Win64 on x86_64 (MySQL Community Server - GPL)
+
+C:\Users\System21>mysql -u root -p
+Enter password: ****
+Welcome to the MySQL monitor.  Commands end with ; or \g.
+Your MySQL connection id is 9
+Server version: 8.0.36 MySQL Community Server - GPL
+
+Copyright (c) 2000, 2024, Oracle and/or its affiliates.
+
+Oracle is a registered trademark of Oracle Corporation and/or its
+affiliates. Other names may be trademarks of their respective
+owners.
+
+Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
+mysql> create database TeB1;
+Query OK, 1 row affected (0.01 sec)
+
+mysql> show databases;
++--------------------+
+| Database           |
++--------------------+
+| college            |
+| company            |
+| employee           |
+| information_schema |
+| mydb               |
+| mysql              |
+| performance_schema |
+| stud123            |
+| student            |
+| student10          |
+| student12          |
+| student123         |
+| student456         |
+| studentinfo        |
+| sys                |
+| te_a2_13144        |
+| te_a_02            |
+| te_b1_13219        |
+| te_bl_18           |
+| teb1               |
++--------------------+
+20 rows in set (0.00 sec)
+
+mysql> use teb1;
+Database changed
+mysql> create table student (roll_no int(10) primary key,name varchar(20),address varchar(10),class varchar(40));
+Query OK, 0 rows affected, 1 warning (0.02 sec)
+mysql> desc student;
++---------+-------------+------+-----+---------+-------+
+| Field   | Type        | Null | Key | Default | Extra |
++---------+-------------+------+-----+---------+-------+
+| roll_no | int         | NO   | PRI | NULL    |       |
+| name    | varchar(20) | YES  |     | NULL    |       |
+| address | varchar(10) | YES  |     | NULL    |       |
+| class   | varchar(40) | YES  |     | NULL    |       |
++---------+-------------+------+-----+---------+-------+
+4 rows in set (0.00 sec)
+
+mysql> insert into student (roll_no,name,address,class) values(1,'raju','pune','A'),(2,'radha','mumbai','B'),(3,'ram','kashi','A'),(4,'krisna','akola','B'),(5,'shreya','nagar','C'),(6,'sanu','nashik','B'),(7,'chiuu','pune','C');
+Query OK, 7 rows affected (0.01 sec)
+Records: 7  Duplicates: 0  Warnings: 0
+
+mysql> select *from student;
++---------+--------+---------+-------+
+| roll_no | name   | address | class |
++---------+--------+---------+-------+
+|       1 | raju   | pune    | A     |
+|       2 | radha  | mumbai  | B     |
+|       3 | ram    | kashi   | A     |
+|       4 | krisna | akola   | B     |
+|       5 | shreya | nagar   | C     |
+|       6 | sanu   | nashik  | B     |
+|       7 | chiuu  | pune    | C     |
++---------+--------+---------+-------+
+7 rows in set (0.00 sec)
+mysql> CREATE TABLE SUBJECT(sub_id int(20),sub_name varchar(30),roll_no int(10));
+Query OK, 0 rows affected, 2 warnings (0.02 sec)
+
+mysql> DESC SUBJECT;
++----------+-------------+------+-----+---------+-------+
+| Field    | Type        | Null | Key | Default | Extra |
++----------+-------------+------+-----+---------+-------+
+| sub_id   | int         | YES  |     | NULL    |       |
+| sub_name | varchar(30) | YES  |     | NULL    |       |
+| roll_no  | int         | YES  |     | NULL    |       |
++----------+-------------+------+-----+---------+-------+
+3 rows in set (0.00 sec)
+
+mysql>  insert into subject(sub_id,sub_name,roll_no)values (101,'ENGLISH',2),(102,'HINDI',3),(103,'MATHS',4),(104,'SCIENCE',1),(105,'GEO',15);
+Query OK, 5 rows affected (0.00 sec)
+Records: 5  Duplicates: 0  Warnings: 0
+
+mysql> SELECT*FROM SUBJECT;
++--------+----------+---------+
+| sub_id | sub_name | roll_no |
++--------+----------+---------+
+|    101 | ENGLISH  |       2 |
+|    102 | HINDI    |       3 |
+|    103 | MATHS    |       4 |
+|    104 | SCIENCE  |       1 |
+|    105 | GEO      |      15 |
++--------+----------+---------+
+5 rows in set (0.00 sec)
+mysql> SELECT STUDENT.NAME,STUDENT.CLASS,SUBJECT.SUB_NAME FROM STUDENT,SUBJECT WHERE STUDENT.ROLL_NO=SUBJECT.ROLL_NO;
++--------+-------+----------+
+| NAME   | CLASS | SUB_NAME |
++--------+-------+----------+
+| radha  | B     | ENGLISH  |
+| ram    | A     | HINDI    |
+| krisna | B     | MATHS    |
+| raju   | A     | SCIENCE  |
++--------+-------+----------+
+4 rows in set (0.00 sec)
+
+mysql> SELECT STUDENT.NAME,STUDENT.CLASS,SUBJECT.SUB_NAME FROM STUDENT LEFT JOIN SUBJECT ON  STUDENT.ROLL_NO=SUBJECT.ROLL_NO;
++--------+-------+----------+
+| NAME   | CLASS | SUB_NAME |
++--------+-------+----------+
+| raju   | A     | SCIENCE  |
+| radha  | B     | ENGLISH  |
+| ram    | A     | HINDI    |
+| krisna | B     | MATHS    |
+| shreya | C     | NULL     |
+| sanu   | B     | NULL     |
+| chiuu  | C     | NULL     |
++--------+-------+----------+
+7 rows in set (0.00 sec)
+
+mysql> SELECT STUDENT.NAME,STUDENT.CLASS,SUBJECT.SUB_NAME FROM STUDENT RIGHT JOIN SUBJECT ON STUDENT.ROLL_NO=SUBJECT.ROLL_NO;
++--------+-------+----------+
+| NAME   | CLASS | SUB_NAME |
++--------+-------+----------+
+| radha  | B     | ENGLISH  |
+| ram    | A     | HINDI    |
+| krisna | B     | MATHS    |
+| raju   | A     | SCIENCE  |
+| NULL   | NULL  | GEO      |
++--------+-------+----------+
+5 rows in set (0.00 sec)

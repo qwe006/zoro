@@ -1,0 +1,76 @@
+Please enter a MongoDB connection string (Default: mongodb://localhost/): mongo mongo 
+Current Mongosh Log ID: 66fffc32e2c7f0cc38c73bf7 
+Connecting to:          
+mongodb://127.0.0.1:27017/mongo?directConnection=true&serverSelectionTimeoutMS=200 0&appName=mongosh+2.3.1 
+Using MongoDB:          8.0.0 
+Using Mongosh:          2.3.1 
+For mongosh info see: https://www.mongodb.com/docs/mongodb-shell/ 
+------ 
+   The server generated these startup warnings when booting 
+   2024-10-04T05:52:52.759+05:30: Access control is not enabled for the database. Read and write access to data and configuration is unrestricted 
+------ 
+mongo> show dbs 
+admin         40.00 KiB config       108.00 KiB customer      60.00 KiB local         72.00 KiB stu_details   72.00 KiB mongo> use payment_status switched to db payment_status 
+payment_status> db.stat.insertMany([{C_id: "VH2415", Product: "Dark Chocolate", Amount:150, Status: "Paid"}, {C_id: "VH2415", Product: "Choco Bakes", Amount:145, 
+Status: "Not Paid"}, {C_id: "VK1524", Product: "Ramen", Amount:225, Status: "Paid"}, 
+{C_id: "VH2415", Product: "Wine", Amount:11500, Status: "Paid"}, {C_id: "VK1524", 
+Proudct: "Biscuits", Amount:475, Status: "Not Paid"}]); 
+{   acknowledged: true,   insertedIds: { 
+    '0': ObjectId('66fffe42e2c7f0cc38c73bf8'), 
+    '1': ObjectId('66fffe42e2c7f0cc38c73bf9'),     '2': ObjectId('66fffe42e2c7f0cc38c73bfa'), 
+    '3': ObjectId('66fffe42e2c7f0cc38c73bfb'), 
+    '4': ObjectId('66fffe42e2c7f0cc38c73bfc') 
+  } } payment_status> db.stat.find().pretty() 
+[ 
+  { 
+    _id: ObjectId('66fffe42e2c7f0cc38c73bf8'), 
+    C_id: 'VH2415', 
+    Product: 'Dark Chocolate', 
+    Amount: 150, 
+    Status: 'Paid' 
+  }, 
+  { 
+    _id: ObjectId('66fffe42e2c7f0cc38c73bf9'), 
+    C_id: 'VH2415', 
+    Product: 'Choco Bakes', 
+    Amount: 145, 
+    Status: 'Not Paid' 
+  }, 
+  { 
+    _id: ObjectId('66fffe42e2c7f0cc38c73bfa'), 
+    C_id: 'VK1524', 
+    Product: 'Ramen', 
+    Amount: 225, 
+    Status: 'Paid' 
+  }, 
+  { 
+    _id: ObjectId('66fffe42e2c7f0cc38c73bfb'), 
+    C_id: 'VH2415', 
+    Product: 'Wine', 
+    Amount: 11500, 
+    Status: 'Paid' 
+  }, 
+  { 
+    _id: ObjectId('66fffe42e2c7f0cc38c73bfc'), 
+    C_id: 'VK1524', 
+    Proudct: 'Biscuits', 
+    Amount: 475, 
+    Status: 'Not Paid' 
+  } 
+] 
+payment_status> 
+db.stat.mapReduce(function(){emit(this.C_id,this.Amount);},function(key,values){return Array.sum(values)},{query:{"Status":"Not Paid"},out:"Bill_Amount:"}) 
+DeprecationWarning: Collection.mapReduce() is deprecated. Use an aggregation instead. 
+See https://docs.mongodb.com/manual/core/map-reduce for details. 
+{ result: 'Bill_Amount:', ok: 1 } payment_status> var mapfun1=function(){emit(this.C_id,this.Amount);}; 
+payment_status> var reducefun1=function(keyC_id,valueAmount){return Array.sum(valueAmount);}; payment_status> db.stat.mapReduce(mapFun1,reduceFun1,{out:"Map"}) 
+ReferenceError: mapFun1 is not defined 
+payment_status> db.stat.mapReduce(mapfun1,reducefun1,{out:"Map"}) 
+{ result: 'Map', ok: 1 } payment_status> db.Bill_Amount:.find().pretty() 
+Uncaught: 
+SyntaxError: Missing semicolon. (1:14) payment_status> db.Bill_Amount.find().pretty() payment_status> db.Map.find() 
+[ { _id: 'VH2415', value: 11795 }, { _id: 'VK1524', value: 700 } ] 
+payment_status> 
+db.stat.mapReduce(function(){emit(this.C_id,this.Amount);},function(key,values){return Array.sum(values)},{query:{"Status":"Not Paid"},out:"Bill_Amount"}) 
+{ result: 'Bill_Amount', ok: 1 } payment_status> db.Bill_Amount.find().pretty() 
+[ { _id: 'VH2415', value: 145 }, { _id: 'VK1524', value: 475 } ] payment_status> 

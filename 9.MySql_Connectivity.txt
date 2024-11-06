@@ -1,0 +1,224 @@
+connect:
+package dbms;
+import java.sql.*;
+
+public class welcome {
+	public static final String DBURL = "jdbc:mysql://localhost:3306/first";
+    public static final String DBUSER = "root";
+    public static final String DBPASS = "root";
+
+	public static void main(String[] args) {
+		try
+		{
+		Class.forName("com.mysql.cj.jdbc.Driver");
+		System.out.println("Driver is loaded successfully");
+		Connection con = DriverManager.getConnection(DBURL, DBUSER, DBPASS);			
+		//Connection cons =DriverManager.getConnection("jdbc:mysql://localhost:3307/DBMS", "root", "root");
+		Statement stm = con.createStatement();
+		System.out.println("Connection is establish");
+
+		}
+		catch(Exception e)
+				{
+			System.out.println(e);
+		}
+
+	}
+
+}
+OUTPUT:
+Driver is loaded successfully
+Connection is establish
+
+Insert:
+package dbms;
+import java.sql.*;
+
+public class insert {
+	public static final String DBURL = "jdbc:mysql://localhost:3306/first";
+    public static final String DBUSER = "root";
+    public static final String DBPASS = "root";
+
+
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+		try
+		{
+			Class.forName("com.mysql.cj.jdbc.Driver");
+			Connection con = DriverManager.getConnection(DBURL, DBUSER, DBPASS);
+			Statement stm = con.createStatement();
+			
+			//Insert the record in to table
+	        String sql = "INSERT INTO student (rollno, name, class) VALUES (?, ?, ?)";
+	        PreparedStatement statement = con.prepareStatement(sql);
+	        statement.setInt(1, 102);
+	        statement.setString(2, "ram");
+	        statement.setString(3, "B");
+	        
+	        int rowsInserted = statement.executeUpdate();
+	        if (rowsInserted > 0)
+	        {
+	             System.out.println("A new student was inserted successfully!\n");
+	        }
+	        // Display the record
+	        String sql1 = "SELECT * FROM student";
+	        Statement stmt = con.createStatement();
+	        ResultSet result = stmt.executeQuery(sql1);
+		}
+			
+		catch(Exception e)
+		{
+			System.out.println(e);
+		}
+	 
+
+	}
+
+}
+OUTPUT:
+A new student was inserted successfully!
+
+mysql> show databases;
++--------------------+
+| Database           |
++--------------------+
+| first              |
+| information_schema |
+| mysql              |
+| performance_schema |
+| sys                |
++--------------------+
+5 rows in set (0.12 sec)
+
+mysql> use first;
+Database changed
+mysql> desc student;
++--------+-------------+------+-----+---------+-------+
+| Field  | Type        | Null | Key | Default | Extra |
++--------+-------------+------+-----+---------+-------+
+| rollno | int         | YES  |     | NULL    |       |
+| name   | varchar(25) | YES  |     | NULL    |       |
+| class  | varchar(25) | YES  |     | NULL    |       |
++--------+-------------+------+-----+---------+-------+
+3 rows in set (0.02 sec)
+
+mysql> select * from student;
++--------+-----------+-------+
+| rollno | name      | class |
++--------+-----------+-------+
+|      1 | Gaurav    | B     |
+|      2 | pratiksha | B     |
+|      3 | Devesh    | B     |
++--------+-----------+-------+
+3 rows in set (0.03 sec)
+
+mysql> select * from student;
++--------+-----------+-------+
+| rollno | name      | class |
++--------+-----------+-------+
+|      1 | Gaurav    | B     |
+|      2 | pratiksha | B     |
+|      3 | Devesh    | B     |
+|    102 | ram       | B     |
++--------+-----------+-------+
+4 rows in set (0.00 sec)
+
+DELETE:
+package dbms;
+import java.sql.*;
+public class delete {
+	public static final String DBURL = "jdbc:mysql://localhost:3306/first";
+    public static final String DBUSER = "root";
+    public static final String DBPASS = "pratiksha05@";
+    
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+		try
+		{
+			Class.forName("com.mysql.cj.jdbc.Driver");
+			Connection con = DriverManager.getConnection(DBURL, DBUSER, DBPASS);
+			//Connection con =DriverManager.getConnection("jdbc:mysql://localhost:3307/DBMS", "root", "root");
+			Statement stm = con.createStatement();
+			
+			 //Delete the record
+	       String sql3 = "DELETE FROM student WHERE name=?";
+	       PreparedStatement statement1 = con.prepareStatement(sql3);
+	       statement1.setString(1, "ram");
+
+	       int rowsDeleted = statement1.executeUpdate();
+	       if (rowsDeleted > 0)
+	       {
+	            System.out.println("A student was deleted successfully!\n");
+	       }
+	  
+		}
+		 
+		
+			
+		catch(Exception e)
+		{
+			System.out.println(e);
+		}
+
+	}
+
+}
+
+OUTPUT:
+A student was deleted successfully!
+mysql> select * from student;
++--------+-----------+-------+
+| rollno | name      | class |
++--------+-----------+-------+
+|      1 | Gaurav    | B     |
+|      2 | pratiksha | B     |
+|      3 | Devesh    | B     |
++--------+-----------+-------+
+3 rows in set (0.00 sec)
+
+UPDATE:
+package dbms;
+
+import java.sql.*;
+
+public class update {
+    public static final String DBURL = "jdbc:mysql://localhost:3306/first";
+    public static final String DBUSER = "root";
+    public static final String DBPASS = "root";
+
+    public static void main(String[] args) {
+        try {
+            Class.forName("com.mysql.cj.jdbc.Driver");
+            
+            Connection con = DriverManager.getConnection(DBURL, DBUSER, DBPASS);
+            
+            String sql = "UPDATE student SET name=? WHERE name=?";
+            PreparedStatement statement = con.prepareStatement(sql);
+            statement.setString(1, "sohan"); 
+            statement.setString(2, "Devesh");
+    
+            int rowsUpdated = statement.executeUpdate();
+            if (rowsUpdated > 0) {
+                System.out.println("A student's name was updated successfully!\n");
+            } else {
+                System.out.println("No student found with that name.\n");
+            }
+            
+            statement.close();
+            con.close();
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+    }
+}
+OUTPUT:
+A student's name was updated successfully!
+mysql> select * from student;
++--------+-----------+-------+
+| rollno | name      | class |
++--------+-----------+-------+
+|      1 | Gaurav    | B     |
+|      2 | pratiksha | B     |
+|      3 | sohan     | B     |
++--------+-----------+-------+
+3 rows in set (0.00 sec)

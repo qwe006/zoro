@@ -1,0 +1,132 @@
+Microsoft Windows [Version 10.0.22631.3880]
+(c) Microsoft Corporation. All rights reserved.
+
+
+C:\Users\CN LAB08>sqlplus
+
+
+SQL*Plus: Release 21.0.0.0.0 - Production on Tue Aug 13 12:25:27 2024
+Version 21.3.0.0.0
+
+
+Copyright (c) 1982, 2021, Oracle. All rights reserved.
+
+
+Enter user-name: SYSTEM Enter password:
+Last Successful login time: Tue Aug 13 2024 12:06:53 +05:30
+
+
+Connected to:
+Oracle Database 21c Express Edition Release 21.0.0.0.0 - Production Version 21.3.0.0.0
+
+SQL> SET SERVEROUT ON SQL> SET VERIFY OFF SQL>
+SQL> CREATE TABLE o_rollcall(roll_no NUMBER, name VARCHAR2(15), div VARCHAR2(25));
+ 
+Table created.
+
+
+SQL> CREATE TABLE n_rollcall(roll_no NUMBER, name VARCHAR2(20), div VARCHAR2(15));
+
+
+Table created.
+
+
+SQL> INSERT INTO o_rollcall VALUES(1,'GAURAV','B');
+
+
+1 row created.
+
+
+SQL> INSERT INTO o_rollcall VALUES(5,'ONKAR','B');
+
+
+1 row created.
+
+
+SQL> INSERT INTO o_rollcall VALUES(28,'DEVESH','B');
+
+
+1 row created.
+
+
+SQL> INSERT INTO o_rollcall VALUES(30,'SOHAN','B');
+
+
+1 row created.
+
+
+SQL> INSERT INTO o_rollcall VALUES(28,'DEVESH','B');
+
+
+1	row created.
+
+
+SQL> INSERT INTO o_rollcall VALUES(45,'ASHUTOSH','B');
+
+
+1	row created.
+ 
+SQL> CREATE PROCEDURE cursor_imp AS
+2	c_r NUMBER;
+3	c_n VARCHAR2(25);
+4	c_d VARCHAR2(5);
+5	cursor c1 (roll NUMBER , n VARCHAR2 , d VARCHAR2) IS SELECT roll_no , COUNT (roll_no),name
+,COUNT (name), div, COUNT (div) FROM o_rollcall GROUP BY roll_no,name,div HAVING (COUNT(roll_no)>1) AND (COUNT(name)>1) AND (COUNT(div)>1) ;
+6	temp c1%rowtype;
+7	BEGIN
+8	DELETE FROM n_rollcall;
+9	INSERT INTO n_rollcall SELECT * FROM o_rollcall;
+10	OPEN c1(c_r,c_n,c_d);
+11	LOOP
+12	FETCH c1 INTO temp;
+13	EXIT WHEN c1%NOTFOUND;
+14	DELETE FROM n_rollcall WHERE roll_no = temp.roll_no AND name = temp.name AND div = temp.div;
+15	INSERT INTO n_rollcall VALUES (temp.roll_no,temp.name,temp.div);
+16	dbms_output.put_line(temp.roll_no||temp.name||temp.div);
+17	END LOOP;
+18	END;
+19	/
+
+
+Procedure created.
+
+
+SQL>
+SQL> BEGIN
+2	cursor_imp;
+3	END;
+4
+5 /
+
+28 DEVESH 
+PL/SQL procedure successfully completed.
+
+
+SQL> SELECT * FROM o_rollcall;
+
+
+ROLL_NO NAME	DIV
+
+
+1	GAURAV	B
+5	ONKAR	B
+28	DEVESH	B
+30	SOHAN	B
+28	DEVESH	B
+45	ASHUTOSH	B
+
+
+6 rows selected.
+
+
+SQL> SELECT * FROM N_rollcall;
+
+
+ROLL_NO NAME	DIV
+
+
+1	GAURAV	B
+5	ONKAR	B
+28	DEVESH	B
+30	SOHAN	B
+45	ASHUTOSH	B

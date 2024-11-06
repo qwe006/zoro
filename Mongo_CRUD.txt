@@ -1,0 +1,86 @@
+Please enter a MongoDB connection string (Default: mongodb://localhost/): mongo mongo 
+Current Mongosh Log ID: 66ffec3acd9a462256c73bf7 
+Connecting to:          
+mongodb://127.0.0.1:27017/mongo?directConnection=true&serverSelectionTimeoutMS=200 0&appName=mongosh+2.3.1 
+Using MongoDB:          8.0.0 
+Using Mongosh:          2.3.1 
+For mongosh info see: https://www.mongodb.com/docs/mongodb-shell/ 
+------ 
+   The server generated these startup warnings when booting 
+   2024-10-04T05:52:52.759+05:30: Access control is not enabled for the database. Read and write access to data and configuration is unrestricted 
+------ 
+mongo> use stu_details switched to db stu_details 
+stu_details> db.stu_details.insertOne({name: "Vinay Hulsurkar", age: 20, city: "New Delhi"}); {   acknowledged: true,   insertedId: ObjectId('66ffed50cd9a462256c73bf8') 
+stu_details> db.stu_details.insertOne([{name: "Vaishnavi Kapoor", age:20, city: "Chandigarh"}, {name: "Vastav Hulsurkar", age: 23, city: "Banglore"}]) 
+{   acknowledged: true,   insertedId: ObjectId('66ffee09cd9a462256c73bf9') } stu_details> db.stu_details.find().pretty() 
+[ 
+  { 
+    _id: ObjectId('66ffed50cd9a462256c73bf8'),     name: 'Vinay Hulsurkar',     age: 20,     city: 'New Delhi' 
+  }, 
+  { 
+    '0': { name: 'Vaishnavi Kapoor', age: 20, city: 'Chandigarh' }, 
+    '1': { name: 'Vastav Hulsurkar', age: 23, city: 'Banglore' }, 
+    _id: ObjectId('66ffee09cd9a462256c73bf9') 
+  } 
+] 
+stu_details> db.stu_details.updateOne({name: "Vinay Hulsurkar"}, {$set: {age: 21}}); 
+{   acknowledged: true,   insertedId: null,   matchedCount: 1,   modifiedCount: 1,   upsertedCount: 0 
+} stu_details> db.stu_details.updateMany({city: "Banglore"}, {$set: {city: "London"}}); 
+{   acknowledged: true,   insertedId: null,   matchedCount: 0,   modifiedCount: 0,   upsertedCount: 0 
+} stu_details> db.stu_details.find().pretty() 
+[ 
+  { 
+    _id: ObjectId('66ffed50cd9a462256c73bf8'),     name: 'Vinay Hulsurkar',     age: 21,     city: 'New Delhi' 
+  }, 
+  { 
+    '0': { name: 'Vaishnavi Kapoor', age: 20, city: 'Chandigarh' }, 
+    '1': { name: 'Vastav Hulsurkar', age: 23, city: 'Banglore' }, 
+    _id: ObjectId('66ffee09cd9a462256c73bf9') 
+  } 
+] 
+stu_details> db.stu_details.deleteOne({name: "Vaishnavi Kapoor"}); 
+{ acknowledged: true, deletedCount: 0 } stu_details> db.stu_details.find().pretty() 
+[ 
+  { 
+    _id: ObjectId('66ffed50cd9a462256c73bf8'),     name: 'Vinay Hulsurkar',     age: 21,     city: 'New Delhi' 
+  }, 
+  { 
+    '0': { name: 'Vaishnavi Kapoor', age: 20, city: 'Chandigarh' }, 
+    '1': { name: 'Vastav Hulsurkar', age: 23, city: 'Banglore' }, 
+    _id: ObjectId('66ffee09cd9a462256c73bf9') 
+  } 
+] 
+stu_details> db.stu_details.find({$or: [{age: {$lt:25}}, {city: "Banglore"}]}); 
+[ 
+  { 
+    _id: ObjectId('66ffed50cd9a462256c73bf8'),     name: 'Vinay Hulsurkar',     age: 21,     city: 'New Delhi' 
+  } 
+] 
+stu_details> db.stu_details.find({age: {$not: {$gt:20}}}); 
+[ 
+  { 
+    '0': { name: 'Vaishnavi Kapoor', age: 20, city: 'Chandigarh' }, 
+    '1': { name: 'Vastav Hulsurkar', age: 23, city: 'Banglore' }, 
+    _id: ObjectId('66ffee09cd9a462256c73bf9') 
+  } 
+] 
+stu_details> db.stu_details.find({$and: [{age: {$gt:22}}, {city: "Banglore"}]}); 
+ 
+stu_details> db.stu_details.find({$and: [{age: {$gt:20}}, {city: "Banglore"} ]}); 
+ 
+stu_details> db.stu_details.find({age: {$not: {$gt:20}}}); 
+[ 
+  { 
+    '0': { name: 'Vaishnavi Kapoor', age: 20, city: 'Chandigarh' }, 
+    '1': { name: 'Vastav Hulsurkar', age: 23, city: 'Banglore' }, 
+    _id: ObjectId('66ffee09cd9a462256c73bf9') 
+  } 
+] 
+stu_details> db.stu_details.find({$nor:[{age: {$lt:25}}, {city: "Chandigarh"}]}); 
+[ 
+  { 
+    '0': { name: 'Vaishnavi Kapoor', age: 20, city: 'Chandigarh' }, 
+    '1': { name: 'Vastav Hulsurkar', age: 23, city: 'Banglore' }, 
+    _id: ObjectId('66ffee09cd9a462256c73bf9') 
+  } 
+stu_details> 

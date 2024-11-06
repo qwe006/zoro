@@ -1,0 +1,50 @@
+Microsoft Windows [Version 10.0.19045.4651]
+(c) Microsoft Corporation. All rights reserved.
+
+C:\Users\CNLAB05>sqlplus
+
+SQL*Plus: Release 21.0.0.0.0 - Production on Tue Aug 13 15:01:55 2024
+Version 21.3.0.0.0
+
+Copyright (c) 1982, 2021, Oracle.  All rights reserved.
+
+Enter user-name: SYSTEM
+Enter password:
+Last Successful login time: Tue Aug 13 2024 14:52:47 +05:30
+
+Connected to:
+Oracle Database 21c Express Edition Release 21.0.0.0.0 - Production
+Version 21.3.0.0.0
+
+SQL> SET SERVEROUTPUT ON
+SQL> create table area(radius number,area number);
+
+Table created.
+
+SQL> declare
+  2     radius_var number;
+  3     area_var number;
+  4     pi number:=3.14;
+  5  begin
+  6     for radius_var in 5 .. 9 loop
+  7     area_var:=pi*radius_var*radius_var;
+  8     dbms_output.put_line(area_var);
+  9     insert into area values (radius_var,area_var);
+ 10   end loop;
+ 11  end;
+ 12  /
+78.5
+113.04
+153.86
+200.96
+254.34
+
+OUTPUT
+
+    RADIUS       AREA
+---------- ----------
+         5       78.5
+         6     113.04
+         7     153.86
+         8     200.96
+         9     254.34

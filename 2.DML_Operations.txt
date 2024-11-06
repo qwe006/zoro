@@ -1,0 +1,258 @@
+C:\Users\CNLAB01>mysql --version
+mysql  Ver 8.0.36 for Win64 on x86_64 (MySQL Community Server - GPL)
+
+C:\Users\CNLAB01>mysql -u root -p
+Enter password: ****
+mysql> show databases;
++--------------------+
+| Database           |
++--------------------+
+| demo               |
+| employee           |
+| information_schema |
+| mysql              |
+| performance_schema |
+| sakila             |
+| student            |
+| student123         |
+| sys                |
+| te_a2_rollno       |
+| te_a3_13153        |
+| te_b1_13206        |
+| world              |
++--------------------+
+13 rows in set (0.03 sec)
+mysql> create database b1;
+Query OK, 1 row affected (0.01 sec)
+mysql> show databases;
++--------------------+
+| Database           |
++--------------------+
+| b1                 |
+| demo               |
+| employee           |
+| information_schema |
+| mysql              |
+| performance_schema |
+| sakila             |
+| student            |
+| student123         |
+| sys                |
+| te_a2_rollno       |
+| te_a3_13153        |
+| te_b1_13206        |
+| world              |
++--------------------+
+14 rows in set (0.00 sec)
+
+mysql> use b1;
+Database changed
+mysql> create table student;
+ERROR 4028 (HY000): A table must have at least one visible column.
+mysql> create table student(roll_no int(20) primary key,name varchar(30),department varchar(40));
+Query OK, 0 rows affected, 1 warning (0.03 sec)
+mysql> desc student;
++------------+-------------+------+-----+---------+-------+
+| Field      | Type        | Null | Key | Default | Extra |
++------------+-------------+------+-----+---------+-------+
+| roll_no    | int         | NO   | PRI | NULL    |       |
+| name       | varchar(30) | YES  |     | NULL    |       |
+| department | varchar(40) | YES  |     | NULL    |       |
++------------+-------------+------+-----+---------+-------+
+3 rows in set (0.01 sec)
+
+mysql> insert into student (roll_no,name,department)values(1,'RADHA','AA'),(2,'RAJU','BB'),(3,'KIYA','CC'),(4,'RENU','DD'),(5,'RINA','CC'),(6,'KIRAN','AA'),(7,'SANU','DD');
+Query OK, 7 rows affected (0.01 sec)
+Records: 7  Duplicates: 0  Warnings: 0
+
+mysql> SELECT *FROM STUDENT;
++---------+-------+------------+
+| roll_no | name  | department |
++---------+-------+------------+
+|       1 | RADHA | AA         |
+|       2 | RAJU  | BB         |
+|       3 | KIYA  | CC         |
+|       4 | RENU  | DD         |
+|       5 | RINA  | CC         |
+|       6 | KIRAN | AA         |
+|       7 | SANU  | DD         |
++---------+-------+------------+
+7 rows in set (0.00 sec)
+
+mysql> SELECT * FROM STUDENT WHERE ROLL_NO IN(3,7);
++---------+------+------------+
+| roll_no | name | department |
++---------+------+------------+
+|       3 | KIYA | CC         |
+|       7 | SANU | DD         |
++---------+------+------------+
+2 rows in set (0.00 sec)
+
+mysql> SELECT NAME FROM STUDENT WHERE ROLL_NO IN(2,6);
++-------+
+| NAME  |
++-------+
+| RAJU  |
+| KIRAN |
++-------+
+2 rows in set (0.00 sec)
+mysql> SELECT NAME FROM STUDENT WHERE NAME LIKE 'R%';
++-------+
+| NAME  |
++-------+
+| RADHA |
+| RAJU  |
+| RENU  |
+| RINA  |
++-------+
+4 rows in set (0.00 sec)
+
+mysql> SELECT NAME FROM STUDENT ORDER BY NAME DESC;
++-------+
+| NAME  |
++-------+
+| SANU  |
+| RINA  |
+| RENU  |
+| RAJU  |
+| RADHA |
+| KIYA  |
+| KIRAN |
++-------+
+7 rows in set (0.00 sec)
+
+mysql> SELECT NAME FROM STUDENT ORDER BY NAME ASC;
++-------+
+| NAME  |
++-------+
+| KIRAN |
+| KIYA  |
+| RADHA |
+| RAJU  |
+| RENU  |
+| RINA  |
+| SANU  |
++-------+
+7 rows in set (0.00 sec)
+
+mysql> SELECT DISTINCT NAME FROM STUDENT;
++-------+
+| NAME  |
++-------+
+| RADHA |
+| RAJU  |
+| KIYA  |
+| RENU  |
+| RINA  |
+| KIRAN |
+| SANU  |
++-------+
+7 rows in set (0.00 sec)
+
+mysql> SELECT DISTINCT ROLL_NO FROM STUDENT;
++---------+
+| ROLL_NO |
++---------+
+|       1 |
+|       2 |
+|       3 |
+|       4 |
+|       5 |
+|       6 |
+|       7 |
++---------+
+7 rows in set (0.00 sec)
+
+mysql> SELECT DISTINCT DEPARTMENT FROM STUDENT;
++------------+
+| DEPARTMENT |
++------------+
+| AA         |
+| BB         |
+| CC         |
+| DD         |
++------------+
+4 rows in set (0.00 sec)
+
+mysql> CREATE VIEW V1 AS SELECT ROLL_NO FROM STUDENT WHERE ROLL_NO>5;
+Query OK, 0 rows affected (0.01 sec)
+
+mysql> SELECT *FROM V1;
++---------+
+| ROLL_NO |
++---------+
+|       6 |
+|       7 |
++---------+
+2 rows in set (0.00 sec)
+
+mysql> SELECT * FROM STUDENT WHERE NAME IS NULL;
+Empty set (0.00 sec)
+
+mysql> SELECT * FROM STUDENT WHERE NAME IS NOT  NULL;
++---------+-------+------------+
+| roll_no | name  | department |
++---------+-------+------------+
+|       1 | RADHA | AA         |
+|       2 | RAJU  | BB         |
+|       3 | KIYA  | CC         |
+|       4 | RENU  | DD         |
+|       5 | RINA  | CC         |
+|       6 | KIRAN | AA         |
+|       7 | SANU  | DD         |
++---------+-------+------------+
+7 rows in set (0.00 sec)
+
+mysql> SELECT AVG(ROLL_NO) FROM STUDENT;
++--------------+
+| AVG(ROLL_NO) |
++--------------+
+|       4.0000 |
++--------------+
+1 row in set (0.00 sec)
+
+mysql> SELECT MAX(ROLL_NO) FROM STUDENT;
++--------------+
+| MAX(ROLL_NO) |
++--------------+
+|            7 |
++--------------+
+1 row in set (0.00 sec)
+
+mysql> SELECT MIN(ROLL_NO) FROM STUDENT;
++--------------+
+| MIN(ROLL_NO) |
++--------------+
+|            1 |
++--------------+
+1 row in set (0.00 sec)
+
+mysql> SELECT COUNT(NAME) FROM STUDENT;
++-------------+
+| COUNT(NAME) |
++-------------+
+|           7 |
++-------------+
+1 row in set (0.00 sec)
+
+mysql> SELECT ROLL_NO FROM STUDENT WHERE ROLL_NO>3 GROUP BY ROLL_NO;
++---------+
+| ROLL_NO |
++---------+
+|       4 |
+|       5 |
+|       6 |
+|       7 |
++---------+
+4 rows in set (0.00 sec)
+
+mysql> SELECT ROLL_NO FROM STUDENT GROUP BY ROLL_NO HAVING MAX(ROLL_NO)<5;
++---------+
+| ROLL_NO |
++---------+
+|       1 |
+|       2 |
+|       3 |
+|       4 |
++---------+
+4 rows in set (0.00 sec)
