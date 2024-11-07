@@ -1,0 +1,76 @@
+SQL> CREATE OR REPLACE FUNCTION proc_Grade (
+  2      p_total_marks IN NUMBER
+  3  )
+  4  RETURN VARCHAR2
+  5  IS
+  6      v_class VARCHAR2(30);
+  7  BEGIN
+  8      IF p_total_marks >= 990 AND p_total_marks <= 1500 THEN
+  9          v_class := 'Distinction';
+ 10      ELSIF p_total_marks >= 900 AND p_total_marks <= 989 THEN
+ 11          v_class := 'First Class';
+ 12      ELSIF p_total_marks >= 825 AND p_total_marks <= 899 THEN
+ 13          v_class := 'Higher Second Class';
+ 14      ELSE
+ 15          v_class := 'No Grade';
+ 16      END IF;
+ 17
+ 18      RETURN v_class;
+ 19  END;
+ 20  /
+Function created.
+SQL> CREATE TABLE Stud_Marks (
+  2      Roll NUMBER PRIMARY KEY,
+  3      Name VARCHAR2(50),
+  4      Total_Marks NUMBER
+  5  );
+Table Created
+SQL> CREATE TABLE Result (
+  2      Roll NUMBER PRIMARY KEY,
+  3      Name VARCHAR2(50),
+  4      Class VARCHAR2(30)
+  5  );
+Table Created
+BEGIN
+  2      FOR student IN (SELECT Roll, Name, Total_Marks FROM Stud_Marks) LOOP
+  3          INSERT INTO Result (Roll, Name, Class)
+  4          VALUES (student.Roll, student.Name, proc_Grade(student.Total_Marks));
+  5      END LOOP;
+  6  END;
+  7  /
+SQL> INSERT INTO Stud_Marks (Roll, Name, Total_Marks) VALUES (1, 'Alice', 1000);
+
+1 row created.
+
+SQL> INSERT INTO Stud_Marks (Roll, Name, Total_Marks) VALUES (2, 'Bob', 950);
+
+1 row created.
+
+SQL> INSERT INTO Stud_Marks (Roll, Name, Total_Marks) VALUES (3, 'Charlie', 880);
+
+1 row created.
+
+SQL> INSERT INTO Stud_Marks (Roll, Name, Total_Marks) VALUES (4, 'David', 820);
+
+1 row created.
+SQL> SELECT * FROM Result;
+
+      ROLL NAME
+---------- --------------------------------------------------
+CLASS
+------------------------------
+         1 Alice
+Distinction
+
+         2 Bob
+First Class
+
+         3 Charlie
+Higher Second Class
+
+      ROLL NAME
+---------- --------------------------------------------------
+CLASS
+------------------------------
+         4 David
+No Grade
