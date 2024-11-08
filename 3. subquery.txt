@@ -1,0 +1,107 @@
+CREATE DATABASE school_db;
+USE school_db;
+
+-- Create Students Table
+CREATE TABLE students (
+    student_id INT PRIMARY KEY,
+    first_name VARCHAR(50) NOT NULL,
+    last_name VARCHAR(50) NOT NULL,
+    email VARCHAR(100) UNIQUE );
+
+-- Create Marks Table
+CREATE TABLE marks (
+    mark_id INT PRIMARY KEY,
+    student_id INT,
+    subject VARCHAR(50) NOT NULL,
+    marks INT,
+    FOREIGN KEY (student_id) REFERENCES students(student_id) );
+
+-- Insert data into students table
+INSERT INTO students (student_id, first_name, last_name, email)
+VALUES 
+    (1, 'krish', 'singh', 'krish.xyz@.com'),
+    (2, 'priti', 'kamat', 'priti.abc@.com'),
+    (3, 'Alice', 'brown', 'Alice.wxy@.com'),
+    (4, 'pattie', 'patt', 'Pattie.uty@.com');
+
+-- Insert data into marks table
+INSERT INTO marks (mark_id, student_id, subject, marks)
+VALUES
+    (1, 1, 'Mathematics', 85),
+    (2, 1, 'Computer Science', 90),
+    (3, 2, 'Mathematics', 78),
+    (4, 2, 'Computer Science', 92),
+    (5, 3, 'Mathematics', 88),
+    (6, 3, 'Computer Science', 95),
+    (7, 4, 'Mathematics', 72),
+    (8, 4, 'Computer Science', 85);
+
+-- 1. INNER JOIN (only matching records)
+SELECT s.student_id, s.first_name, s.last_name, m.subject, m.marks
+FROM students s
+INNER JOIN marks m ON s.student_id = m.student_id;
+
+-- 2. LEFT JOIN (all records from the left table and matching records from the right table)
+SELECT s.student_id, s.first_name, s.last_name, m.subject, m.marks
+FROM students s
+LEFT JOIN marks m ON s.student_id = m.student_id;
+
+-- 3. RIGHT JOIN (all records from the right table and matching records from the left table)
+SELECT s.student_id, s.first_name, s.last_name, m.subject, m.marks
+FROM students s
+RIGHT JOIN marks m ON s.student_id = m.student_id;
+
+-- 4. FULL OUTER JOIN (all records from both tables)
+SELECT s.student_id, s.first_name, s.last_name, m.subject, m.marks
+FROM students s
+LEFT JOIN marks m ON s.student_id = m.student_id
+UNION
+SELECT s.student_id, s.first_name, s.last_name, m.subject, m.marks
+FROM students s
+RIGHT JOIN marks m ON s.student_id = m.student_id;
+
+-- 5. CROSS JOIN (returns all possible combinations)
+SELECT s.student_id, s.first_name, m.subject
+FROM students s
+CROSS JOIN marks m;
+-- 1. Subquery with LIKE: Find students with marks in Mathematics greater than 80
+SELECT first_name, last_name
+FROM students
+WHERE student_id IN (SELECT student_id FROM marks WHERE subject LIKE 'Mathematics' AND marks > 80);
+
+-- 2. Subquery with greater than condition: Find students who scored more than 85 in Computer Science
+SELECT first_name, last_name
+FROM students
+WHERE student_id IN (SELECT student_id FROM marks WHERE subject = 'Computer Science' AND marks > 85);
+
+-- 3. Subquery with smaller than condition: Find students who scored less than 80 in Mathematics
+SELECT first_name, last_name
+FROM students
+WHERE student_id IN (SELECT student_id FROM marks WHERE subject = 'Mathematics' AND marks < 80);
+
+-- 4. Subquery with a condition: Find students who have both subjects with marks greater than 85
+SELECT first_name, last_name
+FROM students
+WHERE student_id IN (
+    SELECT student_id
+    FROM marks
+    WHERE marks > 85
+    GROUP BY student_id
+    HAVING COUNT(DISTINCT subject) = 2
+);
+
+-- 5. Subquery in SELECT: Get the highest marks scored in Mathematics for each student
+SELECT s.first_name, s.last_name,
+       (SELECT MAX(m.marks) FROM marks m WHERE m.student_id = s.student_id AND m.subject = 'Mathematics') AS max_marks_math
+FROM students s;
+
+-- Create a view to get student marks along with their names
+CREATE VIEW student_marks_view AS
+SELECT s.first_name, s.last_name, m.subject, m.marks
+FROM students s
+JOIN marks m ON s.student_id = m.student_id;
+
+-- Select data from the view
+SELECT * FROM student_marks_view;
+
+
